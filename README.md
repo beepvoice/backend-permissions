@@ -4,6 +4,8 @@ Beep backend handling user permissions. Currently, permissions are defined as us
 
 Relations are cached in redis to avoid excessive querying time. A listener updates the cache on database changes.
 
+This service is meant to be used internally. Otherwise, people can systematically query it finding out which conversation a said user is in.
+
 ## Environment variables
 
 Supply environment variables by either exporting them or editing `.env`.
@@ -32,8 +34,20 @@ Query to see if userid-conversationid is permissable.
 
 #### Params
 
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| userid | String | User's ID |
+| conversationid | Conversation ID |
+
 #### Success (200 OK)
 
 Empty body.
 
 #### Errors
+
+It is recommended to intrepet both as a rejection regardless of error type.
+
+| Code | Description |
+| ---- | ----------- |
+| 401 | Matching userid-conversationid pair not found |
+| 500 | Error accessing cache |

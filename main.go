@@ -117,9 +117,12 @@ func GetPermission(w http.ResponseWriter, r *http.Request, p httprouter.Params) 
   userID := p.ByName("userid")
   conversationID := p.ByName("conversationid")
 
-  id := userID + "+" + conversationID
+  if userID == "" || conversationID == "" {
+    http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+    return
+  }
 
-  exists, err := redisClient.Exists(id).Result()
+  exists, err := redisClient.Exists(userID + "+" + conversationID).Result()
   if err != nil {
     http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
     return
